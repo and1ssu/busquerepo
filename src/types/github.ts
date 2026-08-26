@@ -13,6 +13,13 @@ export interface GitHubUser {
   public_repos: number
 }
 
+export interface GitHubUserSearchResult {
+  avatar_url: string
+  id: number
+  login: string
+  type: string
+}
+
 export interface GitHubLicense {
   key: string
   name: string

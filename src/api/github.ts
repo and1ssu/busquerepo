@@ -1,8 +1,19 @@
 import axios from 'axios'
 import type { AxiosError } from 'axios'
-import type { GitHubRepository, GitHubUser } from '../types/github'
+import type {
+  GitHubRepository,
+  GitHubUser,
+  GitHubUserSearchResult,
+} from '../types/github'
 
 const PER_PAGE = 100
+const USER_SUGGESTION_LIMIT = 10
+const SEARCH_RESULT_LIMIT = 1_000
+
+interface GitHubUserSearchResponse {
+  items: GitHubUserSearchResult[]
+  total_count: number
+}
 
 const client = axios.create({
   baseURL: 'https://api.github.com',
@@ -84,6 +95,38 @@ async function getUser(username: string, signal?: AbortSignal) {
   }
 }
 
+async function searchUsers(
+  query: string,
+  page = 1,
+  signal?: AbortSignal,
+) {
+  try {
+    const response = await client.get<GitHubUserSearchResponse>(
+      '/search/users',
+      {
+        params: {
+          page,
+          per_page: USER_SUGGESTION_LIMIT,
+          q: `${query} in:login`,
+        },
+        signal,
+      },
+    )
+    const availableResults = Math.min(
+      response.data.total_count,
+      SEARCH_RESULT_LIMIT,
+    )
+
+    return {
+      hasMore: page * USER_SUGGESTION_LIMIT < availableResults,
+      items: response.data.items,
+    }
+  } catch (error) {
+    if (axios.isCancel(error)) throw error
+    throw toGitHubApiError(error)
+  }
+}
+
 async function getUserRepositories(username: string, signal?: AbortSignal) {
   const repositories: GitHubRepository[] = []
   let page = 1
@@ -132,4 +175,5 @@ export const githubApi = {
   getRepository,
   getUser,
   getUserRepositories,
+  searchUsers,
 }
