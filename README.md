@@ -6,7 +6,7 @@ O projeto foi desenvolvido para o desafio técnico de Front-End da Desbravador S
 
 ## Funcionalidades
 
-- Busca e validação de usuários do GitHub;
+- busca e validação de usuários do GitHub com autocomplete, debounce e paginação infinita;
 - perfil com avatar, bio, seguidores, seguindo, e-mail, empresa, localização e site;
 - carregamento paginado de todos os repositórios públicos do usuário;
 - ordenação por mais/menos estrelas, atualização e nome;
@@ -69,4 +69,3 @@ src/
 ├── types/        # contratos TypeScript da API
 └── utils/        # ordenação, caminhos e formatação
 ```
-
