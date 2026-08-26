@@ -69,4 +69,4 @@ src/
 ├── types/        # contratos TypeScript da API
 └── utils/        # ordenação, caminhos e formatação
 ```
-# busquerepo
+
